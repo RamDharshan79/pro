@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MaAaNn Admin</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <h1>Admin – Add New Course</h1>
+
+  <form id="courseForm">
+    <input type="text" name="course_name" placeholder="Course name" required>
+    <input type="text" name="domain" placeholder="Domain (e.g. Technology)" required>
+    <input type="text" name="subdomain" placeholder="Subdomain (optional)">
+    <input type="text" name="platform" placeholder="Platform (Coursera, NPTEL...)" required>
+    <input type="text" name="level" placeholder="Level (Beginner/Intermediate/Advanced)" required>
+    <input type="text" name="duration" placeholder="Duration (e.g. 10 hours)" required>
+    <input type="text" name="language" placeholder="Language" required>
+    <input type="url"  name="url" placeholder="Course URL" required>
+
+    <label>
+      <input type="checkbox" name="certificate">
+      Certificate available
+    </label>
+
+    <button type="submit">Add Course</button>
+  </form>
+
+  <script type="module" src="assets/admin.js"></script>
+</body>
+</html>

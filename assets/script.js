@@ -1,25 +1,4 @@
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-
-// Function to load courses
-export async function loadCourses(domainFilter = null) {
-  let q = collection(db, "courses");
-
-  if (domainFilter) {
-    q = query(q, where("domain", "==", domainFilter));
-  }
-
-  const snapshot = await getDocs(q);
-  const courses = [];
-  snapshot.forEach((doc) => {
-    courses.push({ id: doc.id, ...doc.data() });
-  });
-
-  return courses;
-}
-
+// Global variables
 let allCourses = [];
 let filteredCourses = [];
 let currentDomain = '';
