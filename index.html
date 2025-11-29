@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaAaNn skillsphere - Free Course Discovery Platform</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>MaAaNn skillsphere</h1>
+                <p class="tagline">Discover Free Learning Opportunities</p>
+            </div>
+            <div class="nav-controls">
+                <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <span class="toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <h2>Find Your Next Course</h2>
+                <div class="search-bar">
+                    <input 
+                        type="text" 
+                        id="homeSearch" 
+                        placeholder="Search for courses, skills, or topics..."
+                        class="search-input"
+                    >
+                    <button id="searchBtn" class="search-button">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domain Cards Section -->
+        <section class="domains-section">
+            <div class="container">
+                <h2>Explore by Domain</h2>
+                <div class="domain-grid">
+                    <div class="domain-card" data-domain="Technology">
+                        <div class="domain-icon">💻</div>
+                        <h3>Technology</h3>
+                        <p>Programming, Data Science, AI, and more</p>
+                        <div class="course-count">15 courses</div>
+                    </div>
+                    <div class="domain-card" data-domain="Commerce">
+                        <div class="domain-icon">📊</div>
+                        <h3>Commerce</h3>
+                        <p>Business, Finance, Marketing, and Economics</p>
+                        <div class="course-count">8 courses</div>
+                    </div>
+                    <div class="domain-card" data-domain="Arts & Humanities">
+                        <div class="domain-icon">🎨</div>
+                        <h3>Arts & Humanities</h3>
+                        <p>History, Literature, Philosophy, and Arts</p>
+                        <div class="course-count">6 courses</div>
+                    </div>
+                    <div class="domain-card" data-domain="Science">
+                        <div class="domain-icon">🔬</div>
+                        <h3>Science</h3>
+                        <p>Physics, Chemistry, Biology, and Research</p>
+                        <div class="course-count">7 courses</div>
+                    </div>
+                    <div class="domain-card" data-domain="Design & Creativity">
+                        <div class="domain-icon">✨</div>
+                        <h3>Design & Creativity</h3>
+                        <p>Graphic Design, UX/UI, Creative Arts</p>
+                        <div class="course-count">9 courses</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section -->
+        <section class="featured-section">
+            <div class="container">
+                <h2>Featured Courses</h2>
+                <div id="featuredCourses" class="course-grid">
+                    <!-- Featured courses will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 MaAaNn skillsphere. All rights reserved.</p>
+            <p>Discover free learning opportunities from across the web.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaAaNn skillsphere - Course Discovery</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1><a href="index.html">MaAaNn skillsphere</a></h1>
+                <p class="tagline">Discover Free Learning Opportunities</p>
+            </div>
+            <div class="nav-controls">
+                <button id="darkModeToggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <span class="toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dynamic Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1 id="pageTitle">Courses</h1>
+            <p id="pageDescription">Discover free courses from top platforms</p>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <input 
+                    type="text" 
+                    id="domainSearch" 
+                    placeholder="Search within this domain..."
+                    class="search-input"
+                >
+                <button id="domainSearchBtn" class="search-button">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="content-wrapper">
+                
+                <!-- Filter Panel -->
+                <aside class="filter-panel">
+                    <h3>Filters</h3>
+                    
+                    <div class="filter-group">
+                        <label for="levelFilter">Level</label>
+                        <select id="levelFilter" class="filter-select">
+                            <option value="">All Levels</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="durationFilter">Duration</label>
+                        <select id="durationFilter" class="filter-select">
+                            <option value="">Any Duration</option>
+                            <option value="0-10">0-10 hours</option>
+                            <option value="10-30">10-30 hours</option>
+                            <option value="30-50">30-50 hours</option>
+                            <option value="50+">50+ hours</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="certificateFilter">
+                            <span class="checkmark"></span>
+                            Certificate Available
+                        </label>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button id="applyFilters" class="apply-button">Apply Filters</button>
+                        <button id="clearFilters" class="clear-button">Clear All</button>
+                    </div>
+                </aside>
+
+                <!-- Course Results -->
+                <section class="course-results">
+                    <div class="results-header">
+                        <h2 id="resultsTitle">All Courses</h2>
+                        <p id="resultsCount" class="results-count">0 courses found</p>
+                    </div>
+                    <div id="courseGrid" class="course-grid"></div>
+
+                    <div id="noResults" class="no-results" style="display: none;">
+                        <p>No courses found matching your criteria.</p>
+                        <button id="clearFiltersNoResults" class="clear-button">Clear Filters</button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 MaAaNn skillsphere. All rights reserved.</p>
+            <p>Discover free learning opportunities from across the web.</p>
+        </div>
+    </footer>
+
+
+    <!-- 🔥 FIRESTORE + FILTERING LOGIC -->
+    <script type="module">
+        import { loadCourses } from './assets/script.js';
+
+        // ---- Get URL Params ----
+        const params = new URLSearchParams(window.location.search);
+        const selectedDomain = params.get('domain');
+        const searchParam = params.get('search') || '';
+
+        // ---- DOM Elements ----
+        const pageTitleEl = document.getElementById('pageTitle');
+        const pageDescEl = document.getElementById('pageDescription');
+        const resultsTitleEl = document.getElementById('resultsTitle');
+        const resultsCountEl = document.getElementById('resultsCount');
+        const courseGridEl = document.getElementById('courseGrid');
+        const noResultsEl = document.getElementById('noResults');
+
+        const levelFilterEl = document.getElementById('levelFilter');
+        const durationFilterEl = document.getElementById('durationFilter');
+        const certificateEl = document.getElementById('certificateFilter');
+
+        const applyFiltersBtn = document.getElementById('applyFilters');
+        const clearFiltersBtn = document.getElementById('clearFilters');
+        const clearNoResultsBtn = document.getElementById('clearFiltersNoResults');
+
+        const domainSearchInput = document.getElementById('domainSearch');
+        const domainSearchBtn = document.getElementById('domainSearchBtn');
+
+        // ---- Update page titles ----
+        if (selectedDomain) {
+            pageTitleEl.textContent = `${selectedDomain} Courses`;
+            resultsTitleEl.textContent = `${selectedDomain} Courses`;
+            pageDescEl.textContent = `Discover free ${selectedDomain} courses from top platforms`;
+        }
+
+        if (searchParam) domainSearchInput.value = searchParam;
+
+        let allCourses = [];
+        let filteredCourses = [];
+
+        // Extract numeric duration
+        function getDurationHours(course) {
+            if (!course.duration) return null;
+            const match = course.duration.match(/(\d+(\.\d+)?)/);
+            return match ? parseFloat(match[1]) : null;
+        }
+
+        // ---- Initial Load ----
+        async function init() {
+            allCourses = await loadCourses(selectedDomain);
+            applyAllFilters();
+        }
+
+        // ---- Apply Filters ----
+        function applyAllFilters() {
+            let result = [...allCourses];
+            const q = domainSearchInput.value.toLowerCase().trim();
+            const level = levelFilterEl.value;
+            const dur = durationFilterEl.value;
+            const certOnly = certificateEl.checked;
+
+            if (level) {
+                result = result.filter(c => (c.level || '').toLowerCase() === level.toLowerCase());
+            }
+
+            if (certOnly) {
+                result = result.filter(c => c.certificate === true);
+            }
+
+            if (dur) {
+                result = result.filter(course => {
+                    const h = getDurationHours(course);
+                    if (h == null) return false;
+
+                    if (dur === '0-10') return h <= 10;
+                    if (dur === '10-30') return h > 10 && h <= 30;
+                    if (dur === '30-50') return h > 30 && h <= 50;
+                    if (dur === '50+') return h > 50;
+                });
+            }
+
+            if (q) {
+                result = result.filter(course => {
+                    const name = (course.course_name || '').toLowerCase();
+                    const platform = (course.platform || '').toLowerCase();
+                    const sub = (course.subdomain || '').toLowerCase();
+                    return name.includes(q) || platform.includes(q) || sub.includes(q);
+                });
+            }
+
+            filteredCourses = result;
+            renderCourses();
+        }
+
+        // ---- Render Courses ----
+        function renderCourses() {
+            courseGridEl.innerHTML = '';
+
+            const count = filteredCourses.length;
+            resultsCountEl.textContent = `${count} course${count === 1 ? '' : 's'} found`;
+
+            if (count === 0) {
+                noResultsEl.style.display = 'block';
+                return;
+            }
+            noResultsEl.style.display = 'none';
+
+            filteredCourses.forEach(course => {
+                const card = document.createElement('article');
+                card.className = 'course-card';
+
+                card.innerHTML = `
+                    <div class="course-header">
+                        <h3 class="course-title">${course.course_name}</h3>
+                        <span class="course-platform">${course.platform}</span>
+                    </div>
+                    <div class="course-meta">
+                        <span class="meta-item">${course.level}</span>
+                        <span class="meta-item">${course.duration}</span>
+                        ${course.certificate ? '<span class="meta-badge">Certificate</span>' : ''}
+                    </div>
+                    <p class="course-domain">${course.domain} ${course.subdomain ? '• ' + course.subdomain : ''}</p>
+                    <div class="course-actions">
+                        <button class="primary-button">Go to Course</button>
+                    </div>
+                `;
+
+                card.querySelector('.primary-button').addEventListener('click', () => {
+                    window.open(course.url, '_blank');
+                });
+
+                courseGridEl.appendChild(card);
+            });
+        }
+
+        // ---- Button Wiring ----
+        applyFiltersBtn.addEventListener('click', applyAllFilters);
+
+        function clearAllFilters() {
+            levelFilterEl.value = '';
+            durationFilterEl.value = '';
+            certificateEl.checked = false;
+            domainSearchInput.value = '';
+            applyAllFilters();
+        }
+
+        clearFiltersBtn.addEventListener('click', clearAllFilters);
+        clearNoResultsBtn.addEventListener('click', clearAllFilters);
+
+        domainSearchBtn.addEventListener('click', applyAllFilters);
+        domainSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyAllFilters();
+            }
+        });
+
+        init();
+    </script>
+
+</body>
+</html>
